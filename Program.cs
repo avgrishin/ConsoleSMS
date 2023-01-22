@@ -34,10 +34,11 @@ namespace ConsoleSMS
       var message1 = new HttpRequestMessage(HttpMethod.Post, "https://omnichannel.mts.ru/http-api/v1/messages/info");
       message1.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes("gw_Y4LG3GBeubor:XfBxSNTc")));
 
-      message1.Content = new StringContent(jsonString/*$"{{\"int_ids\": [\"{s?.messages[0].internal_id}\"]}}"*/, Encoding.UTF8, "application/json");
+      message1.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
       response = await hc.SendAsync(message1);
       response.EnsureSuccessStatusCode();
       var s1 = JsonSerializer.Deserialize<EventRoot>(await response.Content.ReadAsStringAsync());
+      var r = s1.events_info.Select(p => p.events_info).SelectMany(x => x.Select(y => y.status));
       Console.WriteLine(s1);
 
     }
