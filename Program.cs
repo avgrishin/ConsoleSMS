@@ -38,7 +38,8 @@ namespace ConsoleSMS
       response = await hc.SendAsync(message1);
       response.EnsureSuccessStatusCode();
       var s1 = JsonSerializer.Deserialize<EventRoot>(await response.Content.ReadAsStringAsync());
-      var r = s1.events_info.Select(p => p.events_info).SelectMany(x => x.Select(y => y.status));
+      var r = s1.events_info.Select(p => p.events_info).SelectMany(x => x.Select(y => y.status)).ToArray();
+      s1.events_info.SelectMany(p => p.events_info.Select(x => x.status)).ToArray();
       Console.WriteLine(s1);
 
     }
