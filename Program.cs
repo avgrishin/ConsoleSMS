@@ -15,7 +15,7 @@ namespace ConsoleSMS
     {
       var sms = new
       {
-        messages = new[] { new { content = new { short_text = "SMS Text Привет" }, to = new[] { new { msisdn = "79160764810" } } } },
+        messages = new[] { new { content = new { short_text = "SMS Text Привет" }, to = new[] { new { msisdn = "79160650792" } } } },
         options = new { from = new { sms_address = "MTSM_Test" } }
       };
       string jsonString = JsonSerializer.Serialize(sms);
@@ -29,9 +29,12 @@ namespace ConsoleSMS
       var s = JsonSerializer.Deserialize<MessagesRoot>(await response.Content.ReadAsStringAsync());
       Console.WriteLine(s);
 
+      var evn = new { int_ids = new string[] { s?.messages[0].internal_id } };
+      jsonString = JsonSerializer.Serialize(evn);
       var message1 = new HttpRequestMessage(HttpMethod.Post, "https://omnichannel.mts.ru/http-api/v1/messages/info");
       message1.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes("gw_Y4LG3GBeubor:XfBxSNTc")));
-      message1.Content = new StringContent($"{{\"int_ids\": [\"{s?.messages[0].internal_id}\"]}}", Encoding.UTF8, "application/json");
+
+      message1.Content = new StringContent(jsonString/*$"{{\"int_ids\": [\"{s?.messages[0].internal_id}\"]}}"*/, Encoding.UTF8, "application/json");
       response = await hc.SendAsync(message1);
       response.EnsureSuccessStatusCode();
       var s1 = JsonSerializer.Deserialize<EventRoot>(await response.Content.ReadAsStringAsync());
